@@ -1,0 +1,60 @@
+plugins {
+    id 'application'
+    id "com.github.johnrengelman.shadow" version "7.1.2"
+}
+
+group 'com.geolocation.api'
+version '0.0.1-SNAPSHOT'
+
+sourceCompatibility = 17
+
+project.ext {
+    configPath = "$rootProject.projectDir/config/"
+    dropwizardVersion = '2.0.28'
+    junitJupiterVersion = '5.8.2'
+    mockitoVersion = '4.3.1'
+    byteBuddyVersion = '1.12.5'
+    assertjVersion = '3.22.0'
+    mysqlVersion = '8.0.28'
+    objenesisVersion = '2.6'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: junitJupiterVersion
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: junitJupiterVersion
+    testImplementation group: 'org.assertj', name: 'assertj-core', version: assertjVersion
+    testImplementation group: 'io.dropwizard', name: 'dropwizard-testing', version: dropwizardVersion
+    testImplementation group: 'org.mockito', name: 'mockito-junit-jupiter', version: mockitoVersion
+    testImplementation group: 'org.mockito', name: 'mockito-core', version: mockitoVersion
+    testImplementation group: 'net.bytebuddy', name: 'byte-buddy-agent', version: byteBuddyVersion
+    testImplementation group: 'org.objenesis', name: 'objenesis', version: objenesisVersion
+
+    implementation group: 'io.dropwizard', name: 'dropwizard-core', version: dropwizardVersion
+    implementation group: 'io.dropwizard', name: 'dropwizard-db', version: dropwizardVersion
+    implementation group: 'io.dropwizard', name: 'dropwizard-jdbi3', version: dropwizardVersion
+    implementation group: 'net.bytebuddy', name: 'byte-buddy', version: byteBuddyVersion
+    implementation group: 'mysql', name: 'mysql-connector-java', version: mysqlVersion
+}
+
+test {
+    useJUnitPlatform()
+    testLogging {
+        exceptionFormat = 'short'
+        showStandardStreams = true
+        events = ["passed", "failed", "skipped"]
+    }
+}
+
+mainClassName = "com.geolocation.api.configuration.GeolocationApplication"
+
+run {
+    args 'server'//, configPath + 'config.yml'
+}
+
+wrapper {
+    gradleVersion = "7.4"
+}

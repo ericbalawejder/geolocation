@@ -1,0 +1,16 @@
+# IntelliJ
+.idea
+*.iml
+*.ipr
+out/
+
+# Eclipse
+.project
+.classpath
+
+# Gradle
+build
+.gradle
+
+# MacOS
+.DS_Store
