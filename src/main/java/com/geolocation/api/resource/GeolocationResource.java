@@ -1,4 +1,6 @@
-package com.geolocation.api.controller;
+package com.geolocation.api.resource;
+
+import com.geolocation.api.service.GeolocationService;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -10,7 +12,13 @@ import javax.ws.rs.core.Response;
 @Path("/api/geolocation")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
-public class GeolocationController {
+public class GeolocationResource {
+
+    private final GeolocationService geolocationService;
+
+    public GeolocationResource(GeolocationService geolocationService) {
+        this.geolocationService = geolocationService;
+    }
 
     @GET
     @Path("/hello")

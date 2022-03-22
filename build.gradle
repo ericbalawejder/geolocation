@@ -52,7 +52,7 @@ test {
 mainClassName = "com.geolocation.api.configuration.GeolocationApplication"
 
 run {
-    args 'server'//, configPath + 'config.yml'
+    args 'server', configPath + 'config.yml'
 }
 
 wrapper {
