@@ -24,7 +24,7 @@ public interface GeolocationDao {
             ":lat, :lon, :timezone, :isp, :org, :asHandle);")
     void insertGeolocation(@BindBean Geolocation geolocation);
 
-    @SqlUpdate("DELETE FROM geolocation WHERE id = :id")
-    int deleteGeolocation(@Bind("id") int id);
+    @SqlUpdate("DELETE FROM geolocation WHERE query = :query")
+    int deleteGeolocation(@Bind("query") String query);
 
 }

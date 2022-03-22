@@ -25,6 +25,10 @@ https://dev.mysql.com/doc/refman/5.7/en/data-types.html
 Spatial data type for longitude and latitude
 DECIMAL() vs POINT()
 
+##### Testing
+Creating a test profile such as Spring Boot `@ActiveProfile("test")`
+
+
 ##### Schema
 ```sql
 mysql> desc geolocation;
@@ -51,5 +55,5 @@ mysql> desc geolocation;
 
 
 #### Style
-Java line length 80 - 120?
+Java line length 80 - 120?<br>
 New line before end of class

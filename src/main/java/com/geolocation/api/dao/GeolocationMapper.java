@@ -10,8 +10,24 @@ import java.sql.SQLException;
 public class GeolocationMapper implements RowMapper<Geolocation> {
 
     @Override
-    public Geolocation map(ResultSet rs, StatementContext ctx) throws SQLException {
-        return null;
+    public Geolocation map(ResultSet resultSet, StatementContext ctx) throws SQLException {
+        return new Geolocation(
+                resultSet.getLong("id"),
+                resultSet.getString("query"),
+                resultSet.getString("status"),
+                resultSet.getString("country"),
+                resultSet.getString("countryCode"),
+                resultSet.getString("region"),
+                resultSet.getString("regionName"),
+                resultSet.getString("city"),
+                resultSet.getString("zip"),
+                resultSet.getDouble("lat"),
+                resultSet.getDouble("lon"),
+                resultSet.getString("timezone"),
+                resultSet.getString("isp"),
+                resultSet.getString("org"),
+                resultSet.getString("asHandle")
+        );
     }
 
 }
