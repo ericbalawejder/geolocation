@@ -1,5 +1,6 @@
-### geolocation
-Provide the geolocation of a given IP address. Built with [Dropwizard](https://www.dropwizard.io/en/latest/), 
+### Geolocation
+Provide the geolocation of a given IP address. Built with Java 17, 
+[Dropwizard](https://www.dropwizard.io/en/latest/), 
 [Jdbi3](https://jdbi.org/) and [MySQL](https://www.mysql.com/). Uses the 
 [ip-api](https://ip-api.com/docs/api:json) which is intended for developers who want to write applications 
 that can query IP-API.
@@ -19,15 +20,11 @@ $ ./gradlew run
 ```
 Visit the resource path `http://localhost:8080/api/geolocation/hello`
 
-
-#### Thoughts
-https://dev.mysql.com/doc/refman/5.7/en/data-types.html
-Spatial data type for longitude and latitude
-DECIMAL() vs POINT()
-
-##### Testing
-Creating a test profile such as Spring Boot `@ActiveProfile("test")`
-
+##### Tests
+To run the tests:
+```
+$ ./gradlew test
+```
 
 ##### Schema
 ```sql
@@ -52,6 +49,11 @@ mysql> desc geolocation;
 | asHandle    | varchar(200)  | YES  |     | NULL    |                |
 +-------------+---------------+------+-----+---------+----------------+
 ```
+
+#### Thoughts
+https://dev.mysql.com/doc/refman/5.7/en/data-types.html <br>
+Spatial data type for longitude and latitude
+DECIMAL() vs POINT()
 
 
 #### Style

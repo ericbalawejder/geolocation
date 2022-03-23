@@ -1,8 +1,10 @@
 package com.geolocation.api.resource;
 
 import com.geolocation.api.entity.Geolocation;
+import com.geolocation.api.exception.GeolocationException;
 import com.geolocation.api.exception.IPAddressException;
 import com.geolocation.api.service.GeolocationService;
+import com.geolocation.api.util.Greeting;
 import org.apache.commons.validator.routines.InetAddressValidator;
 
 import javax.validation.constraints.NotNull;
@@ -34,22 +36,13 @@ public class GeolocationResource {
     @GET
     @Path("/hello")
     public Response hello() {
-        final String greeting = """
-                Welcome to Geolocation.
-                To retrieve IP based location information, use the path:
-                                
-                /api/geolocation/ip/xxx.xxx.xxx.xxx
-                                
-                where xxx.xxx.xxx.xxx is a valid IPv4 or IPv6 address.
-                """;
         return Response.ok()
-                .entity(greeting)
+                .entity(Greeting.MESSAGE)
                 .build();
     }
 
     @GET
     @Path("/ip/{query}")
-    // "message": "SSL unavailable for this endpoint, order a key at https://members.ip-api.com/"
     public Response getGeolocation(@PathParam("query") String query) {
         if (!InetAddressValidator.getInstance().isValid(query)) {
             throw new IPAddressException();
@@ -61,7 +54,8 @@ public class GeolocationResource {
                     .entity(geolocation)
                     .build();
 
-        } catch (Exception e) {
+        } catch (GeolocationException e) {
+            // SSL unavailable for this endpoint, order a key at https://members.ip-api.com/
             return ClientBuilder.newClient()
                     .target("http://ip-api.com/json/" + query)
                     .request()
