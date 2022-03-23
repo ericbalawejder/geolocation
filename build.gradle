@@ -17,6 +17,7 @@ project.ext {
     assertjVersion = '3.22.0'
     mysqlVersion = '8.0.28'
     objenesisVersion = '2.6'
+    commonsValidatorVersion = '1.7'
 }
 
 repositories {
@@ -31,8 +32,9 @@ dependencies {
     testImplementation group: 'org.mockito', name: 'mockito-junit-jupiter', version: mockitoVersion
     testImplementation group: 'org.mockito', name: 'mockito-core', version: mockitoVersion
     testImplementation group: 'net.bytebuddy', name: 'byte-buddy-agent', version: byteBuddyVersion
-    testImplementation group: 'org.objenesis', name: 'objenesis', version: objenesisVersion
 
+    testImplementation group: 'org.objenesis', name: 'objenesis', version: objenesisVersion
+    implementation group: 'commons-validator', name: 'commons-validator', version: commonsValidatorVersion
     implementation group: 'io.dropwizard', name: 'dropwizard-core', version: dropwizardVersion
     implementation group: 'io.dropwizard', name: 'dropwizard-db', version: dropwizardVersion
     implementation group: 'io.dropwizard', name: 'dropwizard-jdbi3', version: dropwizardVersion
