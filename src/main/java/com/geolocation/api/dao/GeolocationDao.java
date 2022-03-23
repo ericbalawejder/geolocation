@@ -8,6 +8,7 @@ import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 
 import java.util.List;
+import java.util.Optional;
 
 @RegisterRowMapper(GeolocationMapper.class)
 public interface GeolocationDao {
@@ -16,7 +17,7 @@ public interface GeolocationDao {
     List<Geolocation> getGeolocations();
 
     @SqlQuery("SELECT * FROM geolocation WHERE query = :query")
-    Geolocation getGeolocation(@Bind("query") String query);
+    Optional<Geolocation> getGeolocation(@Bind("query") String query);
 
     @SqlUpdate("INSERT INTO geolocation (`id`, `query`, `status`, `country`, `countryCode`, " +
             "`region`, `regionName`, `city`, `zip`, `lat`, `lon`, `timezone`, `isp`, `org`, `asHandle`) " +
@@ -25,6 +26,6 @@ public interface GeolocationDao {
     void insertGeolocation(@BindBean Geolocation geolocation);
 
     @SqlUpdate("DELETE FROM geolocation WHERE query = :query")
-    int deleteGeolocation(@Bind("query") String query);
+    void deleteGeolocation(@Bind("query") String query);
 
 }
