@@ -1,5 +1,6 @@
 package com.geolocation.api.configuration;
 
+import com.geolocation.api.exception.RuntimeExceptionMapper;
 import com.geolocation.api.resource.GeolocationResource;
 import com.geolocation.api.dao.GeolocationDao;
 import com.geolocation.api.service.GeolocationService;
@@ -23,6 +24,7 @@ public class GeolocationApplication extends Application<GeolocationConfiguration
         final GeolocationService geolocationService = new GeolocationService(geolocationDao);
         final GeolocationResource geolocationResource = new GeolocationResource(geolocationService);
         environment.jersey().register(geolocationResource);
+        environment.jersey().register(new RuntimeExceptionMapper());
     }
 
 }
