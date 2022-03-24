@@ -2,10 +2,6 @@ package com.geolocation.api.util;
 
 public class Greeting {
 
-    private Greeting() {
-        throw new IllegalStateException("utility class");
-    }
-
     public static final String MESSAGE = """
                                Welcome to Geolocation.
                 
@@ -27,5 +23,9 @@ public class Greeting {
                 
                 /api/geolocation/delete/<address>
                 """;
+
+    private Greeting() {
+        throw new IllegalStateException("utility class");
+    }
 
 }

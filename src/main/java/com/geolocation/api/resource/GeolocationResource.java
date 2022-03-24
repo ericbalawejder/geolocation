@@ -6,7 +6,13 @@ import com.geolocation.api.exception.IPAddressException;
 import com.geolocation.api.service.GeolocationService;
 import com.geolocation.api.util.Greeting;
 import org.apache.commons.validator.routines.InetAddressValidator;
+import org.glassfish.jersey.internal.guava.CacheBuilder;
+import org.glassfish.jersey.internal.guava.CacheLoader;
+import org.glassfish.jersey.internal.guava.LoadingCache;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import javax.inject.Singleton;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -21,16 +27,32 @@ import javax.ws.rs.core.Response;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 
 @Path("/api/geolocation")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
+@Singleton
 public class GeolocationResource {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(GeolocationResource.class);
     private final GeolocationService geolocationService;
+    private final LoadingCache<String, Geolocation> cache;
 
     public GeolocationResource(GeolocationService geolocationService) {
         this.geolocationService = geolocationService;
+        this.cache = CacheBuilder.newBuilder()
+                .maximumSize(4)
+                .expireAfterAccess(1, TimeUnit.MINUTES)
+                .build(
+                        new CacheLoader<>() {
+                            public Geolocation load(String query) {
+                                LOGGER.info("------load in cache-----");
+                                return geolocationService.getGeolocation(query);
+                            }
+                        }
+                );
     }
 
     @GET
@@ -42,6 +64,15 @@ public class GeolocationResource {
     }
 
     @GET
+    @Path("/ip/cache/{query}")
+    public Response getCache(@PathParam("query") String query) throws ExecutionException {
+        final Geolocation geolocation = cache.get(query);
+        return Response.ok()
+                .entity(geolocation)
+                .build();
+    }
+
+    @GET
     @Path("/ip/{query}")
     public Response getGeolocation(@PathParam("query") String query) {
         if (!InetAddressValidator.getInstance().isValid(query)) {
@@ -49,7 +80,6 @@ public class GeolocationResource {
         }
         try {
             final Geolocation geolocation = geolocationService.getGeolocation(query);
-
             return Response.ok()
                     .entity(geolocation)
                     .build();
