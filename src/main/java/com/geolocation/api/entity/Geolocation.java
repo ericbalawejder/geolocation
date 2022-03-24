@@ -15,8 +15,8 @@ public class Geolocation {
     private String regionName;
     private String city;
     private String zip;
-    private double lat;
-    private double lon;
+    private double latitude;
+    private double longitude;
     private String timezone;
     private String isp;
     private String org;
@@ -26,8 +26,8 @@ public class Geolocation {
     }
 
     public Geolocation(long id, String query, String status, String country, String countryCode,
-                       String region, String regionName, String city, String zip, double lat,
-                       double lon, String timezone, String isp, String org, String asHandle) {
+                       String region, String regionName, String city, String zip, double latitude,
+                       double longitude, String timezone, String isp, String org, String asHandle) {
         this.id = id;
         this.query = query;
         this.status = status;
@@ -37,8 +37,8 @@ public class Geolocation {
         this.regionName = regionName;
         this.city = city;
         this.zip = zip;
-        this.lat = lat;
-        this.lon = lon;
+        this.latitude = latitude;
+        this.longitude = longitude;
         this.timezone = timezone;
         this.isp = isp;
         this.org = org;
@@ -81,12 +81,14 @@ public class Geolocation {
         return zip;
     }
 
-    public double getLat() {
-        return lat;
+    @JsonProperty(value = "lat")
+    public double getLatitude() {
+        return latitude;
     }
 
-    public double getLon() {
-        return lon;
+    @JsonProperty(value = "lon")
+    public double getLongitude() {
+        return longitude;
     }
 
     public String getTimezone() {
@@ -112,8 +114,8 @@ public class Geolocation {
         if (o == null || getClass() != o.getClass()) return false;
         Geolocation that = (Geolocation) o;
         return id == that.id &&
-                Double.compare(that.lat, lat) == 0 &&
-                Double.compare(that.lon, lon) == 0 &&
+                Double.compare(that.latitude, latitude) == 0 &&
+                Double.compare(that.longitude, longitude) == 0 &&
                 query.equals(that.query) &&
                 Objects.equals(status, that.status) &&
                 Objects.equals(country, that.country) &&
@@ -131,7 +133,7 @@ public class Geolocation {
     @Override
     public int hashCode() {
         return Objects.hash(id, query, status, country, countryCode, region, regionName,
-                city, zip, lat, lon, timezone, isp, org, asHandle);
+                city, zip, latitude, longitude, timezone, isp, org, asHandle);
     }
 
     @Override
@@ -146,8 +148,8 @@ public class Geolocation {
                 ", regionName='" + regionName + '\'' +
                 ", city='" + city + '\'' +
                 ", zip='" + zip + '\'' +
-                ", lat=" + lat +
-                ", lon=" + lon +
+                ", lat=" + latitude +
+                ", lon=" + longitude +
                 ", timezone='" + timezone + '\'' +
                 ", isp='" + isp + '\'' +
                 ", org='" + org + '\'' +

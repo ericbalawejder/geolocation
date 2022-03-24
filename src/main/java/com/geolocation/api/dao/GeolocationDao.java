@@ -20,9 +20,9 @@ public interface GeolocationDao {
     Optional<Geolocation> getGeolocation(@Bind("query") String query);
 
     @SqlUpdate("INSERT INTO geolocation (`id`, `query`, `status`, `country`, `countryCode`, " +
-            "`region`, `regionName`, `city`, `zip`, `lat`, `lon`, `timezone`, `isp`, `org`, `asHandle`) " +
+            "`region`, `regionName`, `city`, `zip`, `latitude`, `longitude`, `timezone`, `isp`, `org`, `asHandle`) " +
             "VALUES (:id, :query, :status, :country, :countryCode, :region, :regionName, :city, :zip," +
-            ":lat, :lon, :timezone, :isp, :org, :asHandle);")
+            ":latitude, :longitude, :timezone, :isp, :org, :asHandle);")
     void insertGeolocation(@BindBean Geolocation geolocation);
 
     @SqlUpdate("DELETE FROM geolocation WHERE query = :query")
