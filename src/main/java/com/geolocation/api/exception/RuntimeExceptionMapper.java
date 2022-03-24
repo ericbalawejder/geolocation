@@ -21,7 +21,7 @@ import javax.ws.rs.ext.Provider;
 @Produces(MediaType.APPLICATION_JSON)
 public class RuntimeExceptionMapper implements ExceptionMapper<RuntimeException> {
 
-    public Response handleIPAddressException(IPAddressException exc) {
+    public Response handleIPAddressException(IPAddressFormatException exc) {
         final GeolocationErrorResponse response = new GeolocationErrorResponse(
                 HttpStatus.BAD_REQUEST_400, exc.getMessage(), System.currentTimeMillis());
 
@@ -31,7 +31,7 @@ public class RuntimeExceptionMapper implements ExceptionMapper<RuntimeException>
                 .build();
     }
 
-    public Response handleGeolocationException(GeolocationException exc) {
+    public Response handleGeolocationException(GeolocationNotFoundException exc) {
         final GeolocationErrorResponse response = new GeolocationErrorResponse(
                 HttpStatus.NOT_FOUND_404, exc.getMessage(), System.currentTimeMillis());
 
