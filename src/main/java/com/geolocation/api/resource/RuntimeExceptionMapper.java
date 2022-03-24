@@ -1,5 +1,8 @@
-package com.geolocation.api.exception;
+package com.geolocation.api.resource;
 
+import com.geolocation.api.exception.DuplicateEntryException;
+import com.geolocation.api.exception.GeolocationNotFoundException;
+import com.geolocation.api.exception.IPAddressFormatException;
 import com.geolocation.api.response.GeolocationErrorResponse;
 import org.eclipse.jetty.http.HttpStatus;
 

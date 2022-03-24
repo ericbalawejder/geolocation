@@ -1,6 +1,6 @@
 package com.geolocation.api.configuration;
 
-import com.geolocation.api.exception.RuntimeExceptionMapper;
+import com.geolocation.api.resource.RuntimeExceptionMapper;
 import com.geolocation.api.resource.GeolocationResource;
 import com.geolocation.api.dao.GeolocationDao;
 import com.geolocation.api.service.GeolocationService;
