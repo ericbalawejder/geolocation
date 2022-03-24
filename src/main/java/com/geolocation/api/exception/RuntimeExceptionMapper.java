@@ -13,7 +13,7 @@ import javax.ws.rs.ext.Provider;
  * I'm looking to handle custom exceptions here like Spring Boot with the @ControllerAdvice
  * class level annotation and @ExceptionHandler for each given method. It appears that all exceptions
  * are going through the toResponse(RuntimeException exception) method at the bottom of this class.
- *
+ * <p>
  * My custom responses (GeolocationErrorResponse and GeolocationResponse) are not being serialized
  * properly and the status code appears with an empty json block.
  */
@@ -41,17 +41,18 @@ public class RuntimeExceptionMapper implements ExceptionMapper<RuntimeException>
                 .build();
     }
 
-    @Override
-    public Response toResponse(RuntimeException exception) {
-        /*
+    public Response handleDuplicateEntryException(DuplicateEntryException exc) {
         final GeolocationErrorResponse response = new GeolocationErrorResponse(
-                HttpStatus.NOT_FOUND_404, "¯\\_(ツ)_/¯", System.currentTimeMillis());
+                HttpStatus.BAD_REQUEST_400, exc.getMessage(), System.currentTimeMillis());
 
         return Response.status(response.httpStatus())
                 .entity(response)
                 .type(MediaType.APPLICATION_JSON)
                 .build();
-         */
+    }
+
+    @Override
+    public Response toResponse(RuntimeException exception) {
         return Response.status(404)
                 .entity(exception.getMessage())
                 .build();

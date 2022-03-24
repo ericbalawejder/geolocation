@@ -83,14 +83,9 @@ public class GeolocationResource {
                 .build();
     }
 
-    /**
-     * Deleting a non-existent record should return a message handled in the application.
-     * This is just for development purposes and isn't stated explicitly in the requirements.
-     */
     @DELETE
     @Path("/delete/{query}")
     public Response deleteGeolocation(@PathParam("query") String query) {
-        // Check to make sure the record exists. If not, throw an exception.
         geolocationService.deleteGeolocation(query);
 
         return Response.ok()
