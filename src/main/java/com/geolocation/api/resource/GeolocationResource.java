@@ -1,10 +1,9 @@
 package com.geolocation.api.resource;
 
 import com.geolocation.api.entity.Geolocation;
-import com.geolocation.api.exception.GeolocationException;
-import com.geolocation.api.exception.IPAddressException;
+import com.geolocation.api.exception.GeolocationNotFoundException;
+import com.geolocation.api.exception.IPAddressFormatException;
 import com.geolocation.api.service.GeolocationService;
-import com.geolocation.api.util.Greeting;
 import org.apache.commons.validator.routines.InetAddressValidator;
 import org.glassfish.jersey.internal.guava.CacheBuilder;
 import org.glassfish.jersey.internal.guava.CacheLoader;
@@ -24,6 +23,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -36,6 +36,8 @@ import java.util.concurrent.TimeUnit;
 @Singleton
 public class GeolocationResource {
 
+    // SSL unavailable for this endpoint, order a key at https://members.ip-api.com/
+    private static final URI ENDPOINT = URI.create("http://ip-api.com/json/");
     private static final Logger LOGGER = LoggerFactory.getLogger(GeolocationResource.class);
     private final GeolocationService geolocationService;
     private final LoadingCache<String, Geolocation> cache;
@@ -47,8 +49,8 @@ public class GeolocationResource {
                 .expireAfterAccess(1, TimeUnit.MINUTES)
                 .build(
                         new CacheLoader<>() {
+                            @Override
                             public Geolocation load(String query) {
-                                LOGGER.info("------load in cache-----");
                                 return geolocationService.getGeolocation(query);
                             }
                         }
@@ -59,37 +61,25 @@ public class GeolocationResource {
     @Path("/hello")
     public Response hello() {
         return Response.ok()
-                .entity(Greeting.MESSAGE)
-                .build();
-    }
-
-    @GET
-    @Path("/ip/cache/{query}")
-    public Response getCache(@PathParam("query") String query) throws ExecutionException {
-        final Geolocation geolocation = cache.get(query);
-        return Response.ok()
-                .entity(geolocation)
+                .entity("Welcome to Geolocation")
                 .build();
     }
 
     @GET
     @Path("/ip/{query}")
-    public Response getGeolocation(@PathParam("query") String query) {
+    public Response getGeolocation(@PathParam("query") String query) throws MalformedURLException {
         if (!InetAddressValidator.getInstance().isValid(query)) {
-            throw new IPAddressException();
+            throw new IPAddressFormatException();
         }
         try {
-            final Geolocation geolocation = geolocationService.getGeolocation(query);
+            final Geolocation geolocation = cache.get(query);
             return Response.ok()
                     .entity(geolocation)
                     .build();
 
-        } catch (GeolocationException e) {
-            // SSL unavailable for this endpoint, order a key at https://members.ip-api.com/
-            return ClientBuilder.newClient()
-                    .target("http://ip-api.com/json/" + query)
-                    .request()
-                    .get(Response.class);
+        } catch (GeolocationNotFoundException | ExecutionException e) {
+            LOGGER.info("making external api call");
+            return makeExternalAPICall(query);
         }
     }
 
@@ -121,6 +111,13 @@ public class GeolocationResource {
         return Response.ok()
                 .entity("geolocation deleted successfully")
                 .build();
+    }
+
+    private Response makeExternalAPICall(String query) throws MalformedURLException {
+        return ClientBuilder.newClient()
+                .target(ENDPOINT.toURL() + query)
+                .request()
+                .get(Response.class);
     }
 
 }
