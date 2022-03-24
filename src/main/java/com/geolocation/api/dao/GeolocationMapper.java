@@ -12,7 +12,6 @@ public class GeolocationMapper implements RowMapper<Geolocation> {
     @Override
     public Geolocation map(ResultSet resultSet, StatementContext ctx) throws SQLException {
         return new Geolocation(
-                resultSet.getLong("id"),
                 resultSet.getString("query"),
                 resultSet.getString("status"),
                 resultSet.getString("country"),

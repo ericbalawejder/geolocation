@@ -6,20 +6,19 @@ DROP TABLE IF EXISTS geolocation;
 
 CREATE TABLE geolocation
 (
-    id INT AUTO_INCREMENT,
-    query VARCHAR(200),
-    status VARCHAR(200),
-    country VARCHAR(200),
-    countryCode VARCHAR(200),
-    region VARCHAR(200),
-    regionName VARCHAR(200),
-    city VARCHAR(200),
-    zip VARCHAR(200),
+    query VARCHAR(255) NOT NULL UNIQUE,
+    status VARCHAR(255),
+    country VARCHAR(255),
+    countryCode VARCHAR(255),
+    region VARCHAR(255),
+    regionName VARCHAR(255),
+    city VARCHAR(255),
+    zip VARCHAR(255),
     latitude DECIMAL(10,8),
     longitude DECIMAL(11, 8),
-    timezone VARCHAR(200),
-    isp VARCHAR(200),
-    org VARCHAR(200),
-    asHandle VARCHAR(200),
-    PRIMARY KEY (id)
+    timezone VARCHAR(255),
+    isp VARCHAR(255),
+    org VARCHAR(255),
+    asHandle VARCHAR(255),
+    PRIMARY KEY (query)
 );

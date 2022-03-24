@@ -6,7 +6,6 @@ import java.util.Objects;
 
 public class Geolocation {
 
-    private long id;
     private String query;
     private String status;
     private String country;
@@ -25,10 +24,9 @@ public class Geolocation {
     protected Geolocation() {
     }
 
-    public Geolocation(long id, String query, String status, String country, String countryCode,
+    public Geolocation(String query, String status, String country, String countryCode,
                        String region, String regionName, String city, String zip, double latitude,
                        double longitude, String timezone, String isp, String org, String asHandle) {
-        this.id = id;
         this.query = query;
         this.status = status;
         this.country = country;
@@ -43,10 +41,6 @@ public class Geolocation {
         this.isp = isp;
         this.org = org;
         this.asHandle = asHandle;
-    }
-
-    public long getId() {
-        return id;
     }
 
     public String getQuery() {
@@ -113,8 +107,7 @@ public class Geolocation {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Geolocation that = (Geolocation) o;
-        return id == that.id &&
-                Double.compare(that.latitude, latitude) == 0 &&
+        return Double.compare(that.latitude, latitude) == 0 &&
                 Double.compare(that.longitude, longitude) == 0 &&
                 query.equals(that.query) &&
                 Objects.equals(status, that.status) &&
@@ -132,14 +125,13 @@ public class Geolocation {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, query, status, country, countryCode, region, regionName,
+        return Objects.hash(query, status, country, countryCode, region, regionName,
                 city, zip, latitude, longitude, timezone, isp, org, asHandle);
     }
 
     @Override
     public String toString() {
         return "Geolocation{" +
-                "id=" + id +
                 ", query='" + query + '\'' +
                 ", status='" + status + '\'' +
                 ", country='" + country + '\'' +
