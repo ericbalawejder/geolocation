@@ -2,6 +2,7 @@ package com.geolocation.api.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.jdbi.v3.core.mapper.reflect.ColumnName;
 
 import java.util.Objects;
 
@@ -11,8 +12,10 @@ public class Geolocation {
     private String query;
     private String status;
     private String country;
+    @ColumnName("country_code")
     private String countryCode;
     private String region;
+    @ColumnName("region_name")
     private String regionName;
     private String city;
     private String zip;
@@ -21,6 +24,7 @@ public class Geolocation {
     private String timezone;
     private String isp;
     private String org;
+    @ColumnName("as_handle")
     private String asHandle;
 
     protected Geolocation() {

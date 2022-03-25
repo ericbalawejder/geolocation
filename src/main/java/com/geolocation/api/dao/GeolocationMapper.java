@@ -15,9 +15,9 @@ public class GeolocationMapper implements RowMapper<Geolocation> {
                 resultSet.getString("query"),
                 resultSet.getString("status"),
                 resultSet.getString("country"),
-                resultSet.getString("countryCode"),
+                resultSet.getString("country_code"),
                 resultSet.getString("region"),
-                resultSet.getString("regionName"),
+                resultSet.getString("region_name"),
                 resultSet.getString("city"),
                 resultSet.getString("zip"),
                 resultSet.getDouble("latitude"),
@@ -25,7 +25,7 @@ public class GeolocationMapper implements RowMapper<Geolocation> {
                 resultSet.getString("timezone"),
                 resultSet.getString("isp"),
                 resultSet.getString("org"),
-                resultSet.getString("asHandle")
+                resultSet.getString("as_handle")
         );
     }
 

@@ -19,8 +19,8 @@ public interface GeolocationDao {
     @SqlQuery("SELECT * FROM geolocation WHERE query = :query")
     Optional<Geolocation> getGeolocation(@Bind("query") String query);
 
-    @SqlUpdate("INSERT INTO geolocation (`query`, `status`, `country`, `countryCode`, " +
-            "`region`, `regionName`, `city`, `zip`, `latitude`, `longitude`, `timezone`, `isp`, `org`, `asHandle`) " +
+    @SqlUpdate("INSERT INTO geolocation (`query`, `status`, `country`, `country_code`, " +
+            "`region`, `region_name`, `city`, `zip`, `latitude`, `longitude`, `timezone`, `isp`, `org`, `as_handle`) " +
             "VALUES (:query, :status, :country, :countryCode, :region, :regionName, :city, :zip," +
             ":latitude, :longitude, :timezone, :isp, :org, :asHandle);")
     void insertGeolocation(@BindBean Geolocation geolocation);

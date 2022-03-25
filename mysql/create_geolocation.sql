@@ -9,9 +9,9 @@ CREATE TABLE geolocation
     query VARCHAR(255) NOT NULL UNIQUE,
     status VARCHAR(255),
     country VARCHAR(255),
-    countryCode VARCHAR(255),
+    country_code VARCHAR(255),
     region VARCHAR(255),
-    regionName VARCHAR(255),
+    region_name VARCHAR(255),
     city VARCHAR(255),
     zip VARCHAR(255),
     latitude DECIMAL(10,8),
@@ -19,6 +19,6 @@ CREATE TABLE geolocation
     timezone VARCHAR(255),
     isp VARCHAR(255),
     org VARCHAR(255),
-    asHandle VARCHAR(255),
+    as_handle VARCHAR(255),
     PRIMARY KEY (query)
 );
