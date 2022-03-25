@@ -1,0 +1,16 @@
+{
+  "query": "55.48.0.1",
+  "status": "success",
+  "country": "United States",
+  "countryCode": "US",
+  "region": "AZ",
+  "regionName": "Arizona",
+  "city": "Sierra Vista",
+  "zip": "85613",
+  "lat": 31.5552,
+  "lon": -110.35,
+  "timezone": "America/Phoenix",
+  "isp": "DoD Network Information Center",
+  "org": "USAISC",
+  "as": "AS356 DoD Network Information Center"
+}
