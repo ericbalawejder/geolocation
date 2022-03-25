@@ -25,21 +25,18 @@ repositories {
 }
 
 dependencies {
+    implementation group: 'commons-validator', name: 'commons-validator', version: commonsValidatorVersion
+    implementation group: 'io.dropwizard', name: 'dropwizard-core', version: dropwizardVersion
+    implementation group: 'io.dropwizard', name: 'dropwizard-db', version: dropwizardVersion
+    implementation group: 'io.dropwizard', name: 'dropwizard-jdbi3', version: dropwizardVersion
+    implementation group: 'mysql', name: 'mysql-connector-java', version: mysqlVersion
+
     testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: junitJupiterVersion
     testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: junitJupiterVersion
     testImplementation group: 'org.assertj', name: 'assertj-core', version: assertjVersion
     testImplementation group: 'io.dropwizard', name: 'dropwizard-testing', version: dropwizardVersion
     testImplementation group: 'org.mockito', name: 'mockito-junit-jupiter', version: mockitoVersion
     testImplementation group: 'org.mockito', name: 'mockito-core', version: mockitoVersion
-    testImplementation group: 'net.bytebuddy', name: 'byte-buddy-agent', version: byteBuddyVersion
-
-    testImplementation group: 'org.objenesis', name: 'objenesis', version: objenesisVersion
-    implementation group: 'commons-validator', name: 'commons-validator', version: commonsValidatorVersion
-    implementation group: 'io.dropwizard', name: 'dropwizard-core', version: dropwizardVersion
-    implementation group: 'io.dropwizard', name: 'dropwizard-db', version: dropwizardVersion
-    implementation group: 'io.dropwizard', name: 'dropwizard-jdbi3', version: dropwizardVersion
-    implementation group: 'net.bytebuddy', name: 'byte-buddy', version: byteBuddyVersion
-    implementation group: 'mysql', name: 'mysql-connector-java', version: mysqlVersion
 }
 
 test {
