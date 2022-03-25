@@ -27,7 +27,6 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 @Path("/api/geolocation")
@@ -72,13 +71,14 @@ public class GeolocationResource {
             throw new IPAddressFormatException();
         }
         try {
-            final Geolocation geolocation = cache.get(query);
+            //final Geolocation geolocation = cache.get(query);
+            final Geolocation geolocation = geolocationService.getGeolocation(query);
             return Response.ok()
                     .entity(geolocation)
                     .build();
 
-        } catch (GeolocationNotFoundException | ExecutionException e) {
-            LOGGER.info("making external api call");
+        } catch (/*ExecutionException |*/ GeolocationNotFoundException e) {
+            LOGGER.info("making external api call to " + ENDPOINT + query);
             return makeExternalAPICall(query);
         }
     }
