@@ -47,8 +47,9 @@ would with Spring Boot's Spring Data JPA annotations in the entity class. We mus
 to create the user, database and table.
 
 
-3) `/api/geolocation/ip/<ip-address>` If a query is not in the db, throw an exception. Catch the exception 
-and make the external api call.
+3) `/api/geolocation/ip/<ip-address>` Updated to use an `Optional<T>` over `Exception` logic. Check the cache. 
+If not in the cache, get from the database and load in the cache. If not in the database, make external api 
+call with query.
 
 
 4) I want to throw the checked exceptions themselves without adding ugly try/catches to the stream.
