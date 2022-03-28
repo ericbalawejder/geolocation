@@ -11,13 +11,11 @@ sourceCompatibility = 17
 project.ext {
     configPath = "$rootProject.projectDir/config/"
     dropwizardVersion = '2.0.28'
+    mysqlVersion = '8.0.28'
+    commonsValidatorVersion = '1.7'
     junitJupiterVersion = '5.8.2'
     mockitoVersion = '4.3.1'
-    byteBuddyVersion = '1.12.5'
     assertjVersion = '3.22.0'
-    mysqlVersion = '8.0.28'
-    objenesisVersion = '2.6'
-    commonsValidatorVersion = '1.7'
 }
 
 repositories {

@@ -6,12 +6,12 @@ import com.geolocation.api.exception.DuplicateEntryException;
 import com.geolocation.api.exception.GeolocationNotFoundException;
 
 import java.util.List;
+import java.util.Optional;
 
 public record GeolocationService(GeolocationDao geolocationDao) {
 
-    public Geolocation getGeolocation(String query) {
-        return geolocationDao.getGeolocation(query)
-                .orElseThrow(GeolocationNotFoundException::new);
+    public Optional<Geolocation> getGeolocation(String query) {
+        return geolocationDao.getGeolocation(query);
     }
 
     public List<Geolocation> getGeolocations() {

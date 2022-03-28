@@ -1,7 +1,8 @@
 package com.geolocation.api.resource;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.geolocation.api.entity.Geolocation;
-import com.geolocation.api.exception.GeolocationNotFoundException;
 import com.geolocation.api.exception.IPAddressFormatException;
 import com.geolocation.api.service.GeolocationService;
 import org.apache.commons.validator.routines.InetAddressValidator;
@@ -23,10 +24,13 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 @Path("/api/geolocation")
@@ -39,7 +43,7 @@ public class GeolocationResource {
     private static final URI ENDPOINT = URI.create("http://ip-api.com/json/");
     private static final Logger LOGGER = LoggerFactory.getLogger(GeolocationResource.class);
     private final GeolocationService geolocationService;
-    private final LoadingCache<String, Geolocation> cache;
+    private final LoadingCache<String, Optional<Geolocation>> cache;
 
     public GeolocationResource(GeolocationService geolocationService) {
         this.geolocationService = geolocationService;
@@ -49,8 +53,13 @@ public class GeolocationResource {
                 .build(
                         new CacheLoader<>() {
                             @Override
-                            public Geolocation load(String query) {
-                                return geolocationService.getGeolocation(query);
+                            public Optional<Geolocation> load(String query) {
+                                final Optional<Geolocation> geolocation =
+                                        geolocationService.getGeolocation(query);
+                                if (geolocation.isPresent()) {
+                                    LOGGER.info("load in cache");
+                                }
+                                return geolocation;
                             }
                         }
                 );
@@ -66,21 +75,23 @@ public class GeolocationResource {
 
     @GET
     @Path("/ip/{query}")
-    public Response getGeolocation(@PathParam("query") String query) throws MalformedURLException {
+    public Response getGeolocation(@PathParam("query") String query) throws ExecutionException {
         if (!InetAddressValidator.getInstance().isValid(query)) {
             throw new IPAddressFormatException();
         }
-        try {
-            //final Geolocation geolocation = cache.get(query);
-            final Geolocation geolocation = geolocationService.getGeolocation(query);
-            return Response.ok()
-                    .entity(geolocation)
-                    .build();
+        final Geolocation geolocation = cache.get(query)
+                .orElseGet(() -> {
+                    try {
+                        return makeExternalAPICall(query);
+                    } catch (MalformedURLException | JsonProcessingException e) {
+                        e.printStackTrace();
+                        throw new RuntimeException();
+                    }
+                });
 
-        } catch (/*ExecutionException |*/ GeolocationNotFoundException e) {
-            LOGGER.info("making external api call to " + ENDPOINT + query);
-            return makeExternalAPICall(query);
-        }
+        return Response.ok()
+                .entity(geolocation)
+                .build();
     }
 
     @GET
@@ -113,11 +124,15 @@ public class GeolocationResource {
                 .build();
     }
 
-    private Response makeExternalAPICall(String query) throws MalformedURLException {
-        return ClientBuilder.newClient()
+    private Geolocation makeExternalAPICall(String query) throws MalformedURLException, JsonProcessingException {
+        LOGGER.info("making external api call to " + ENDPOINT + query);
+        final String apiResponse = ClientBuilder.newClient()
                 .target(ENDPOINT.toURL() + query)
                 .request()
-                .get(Response.class);
+                .get(String.class);
+
+        return new ObjectMapper()
+                .readValue(apiResponse, Geolocation.class);
     }
 
 }

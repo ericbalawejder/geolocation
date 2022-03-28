@@ -51,53 +51,8 @@ to create the user, database and table.
 and make the external api call.
 
 
-4) The cache works when a geolocation is present in the database but when an external api call is required,
-the exception is thrown but not caught in the intended place. The cache is currently not in use. Below is the 
-intended logic and code but it is disabled in the endpoint.
-```java
-public class GeolocationResource {
-    ...
-    ...
-    public GeolocationResource(GeolocationService geolocationService) {
-        this.geolocationService = geolocationService;
-        this.cache = CacheBuilder.newBuilder()
-                .maximumSize(4)
-                .expireAfterAccess(1, TimeUnit.MINUTES)
-                .build(
-                        new CacheLoader<>() {
-                            @Override
-                            public Geolocation load(String query) {
-                                // If query is not in the cache, this method load() gets executed.
-                                // It looks in the db, if present, load it in the cache and return it. 
-                                // If query is not in the db, GeolocationNotFoundException is thrown 
-                                // here and not in the try block of getGeolocation(). 
-                                // makeExternalAPICall() doesn't get executed.
-                                return geolocationService.getGeolocation(query);
-                            }
-                        }
-                );
-    }
-
-    @GET
-    @Path("/ip/{query}")
-    public Response getGeolocation(@PathParam("query") String query) throws MalformedURLException {
-        if (!InetAddressValidator.getInstance().isValid(query)) {
-            throw new IPAddressFormatException();
-        }
-        try {
-            // Get query from the cache
-            final Geolocation geolocation = cache.get(query);
-            return Response.ok()
-                    .entity(geolocation)
-                    .build();
-
-        } catch (GeolocationNotFoundException | ExecutionException e) {
-            LOGGER.info("making external api call to " + ENDPOINT + query);
-            return makeExternalAPICall(query);
-        }
-    }
-}
-```
+4) I want to throw the checked exceptions themselves without adding ugly try/catches to the stream.
+[How can I throw CHECKED exceptions from inside Java 8 streams?](https://stackoverflow.com/questions/27644361/how-can-i-throw-checked-exceptions-from-inside-java-8-streams)
 
 
 5) `GeolocationTest` tests the serialization and deserialization of an api response and tests for missing and 
