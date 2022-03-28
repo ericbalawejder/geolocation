@@ -1,7 +1,6 @@
 package com.geolocation.api.resource;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.geolocation.api.entity.Geolocation;
 import com.geolocation.api.exception.IPAddressFormatException;
 import com.geolocation.api.service.GeolocationService;
@@ -24,7 +23,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -126,13 +124,10 @@ public class GeolocationResource {
 
     private Geolocation makeExternalAPICall(String query) throws MalformedURLException, JsonProcessingException {
         LOGGER.info("making external api call to " + ENDPOINT + query);
-        final String apiResponse = ClientBuilder.newClient()
+        return ClientBuilder.newClient()
                 .target(ENDPOINT.toURL() + query)
                 .request()
-                .get(String.class);
-
-        return new ObjectMapper()
-                .readValue(apiResponse, Geolocation.class);
+                .get(Geolocation.class);
     }
 
 }
