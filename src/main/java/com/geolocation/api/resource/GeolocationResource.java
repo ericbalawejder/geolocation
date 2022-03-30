@@ -2,12 +2,10 @@ package com.geolocation.api.resource;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.geolocation.api.entity.Geolocation;
+import com.geolocation.api.exception.ExternalAPIRequestException;
 import com.geolocation.api.exception.IPAddressFormatException;
 import com.geolocation.api.service.GeolocationService;
 import org.apache.commons.validator.routines.InetAddressValidator;
-import org.glassfish.jersey.internal.guava.CacheBuilder;
-import org.glassfish.jersey.internal.guava.CacheLoader;
-import org.glassfish.jersey.internal.guava.LoadingCache;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,9 +25,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
 
 @Path("/api/geolocation")
 @Consumes(MediaType.APPLICATION_JSON)
@@ -41,26 +37,9 @@ public class GeolocationResource {
     private static final URI ENDPOINT = URI.create("http://ip-api.com/json/");
     private static final Logger LOGGER = LoggerFactory.getLogger(GeolocationResource.class);
     private final GeolocationService geolocationService;
-    private final LoadingCache<String, Optional<Geolocation>> cache;
 
     public GeolocationResource(GeolocationService geolocationService) {
         this.geolocationService = geolocationService;
-        this.cache = CacheBuilder.newBuilder()
-                .maximumSize(4)
-                .expireAfterAccess(1, TimeUnit.MINUTES)
-                .build(
-                        new CacheLoader<>() {
-                            @Override
-                            public Optional<Geolocation> load(String query) {
-                                final Optional<Geolocation> geolocation =
-                                        geolocationService.getGeolocation(query);
-                                if (geolocation.isPresent()) {
-                                    LOGGER.info("load in cache");
-                                }
-                                return geolocation;
-                            }
-                        }
-                );
     }
 
     @GET
@@ -77,13 +56,12 @@ public class GeolocationResource {
         if (!InetAddressValidator.getInstance().isValid(query)) {
             throw new IPAddressFormatException();
         }
-        final Geolocation geolocation = cache.get(query)
+        final Geolocation geolocation = geolocationService.getGeolocation(query)
                 .orElseGet(() -> {
                     try {
                         return makeExternalAPICall(query);
                     } catch (MalformedURLException | JsonProcessingException e) {
-                        e.printStackTrace();
-                        throw new RuntimeException();
+                        throw new ExternalAPIRequestException();
                     }
                 });
 
