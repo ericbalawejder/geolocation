@@ -69,7 +69,10 @@ I like to separate the test and database dependencies with an `@ActiveProfile("t
 I did not test the other CRUD operations because they were just for development purposes.
 
 
-6) I did not implement the timestamp logic after having issues with the cache and tests.
+6) Added `date_created DATETIME(6)` to the schema and [`@Timestamped`](https://jdbi.org/#_timestamped) 
+annotation to the `insertGeolocation()` method in the dao to bind an `OffsetDateTime`, of which the value 
+is the current time, under the binding `:now`. This field is not part of the deserialization/serialization
+of the api response to the Geolocation POJO and vise versa.
 
 
 7) Did not implement due to time constraints. I would pull a record and do a conditional check for the
