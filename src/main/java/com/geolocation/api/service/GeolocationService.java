@@ -4,9 +4,9 @@ import com.geolocation.api.dao.GeolocationDao;
 import com.geolocation.api.entity.Geolocation;
 import com.geolocation.api.exception.DuplicateEntryException;
 import com.geolocation.api.exception.GeolocationNotFoundException;
-import org.glassfish.jersey.internal.guava.CacheBuilder;
-import org.glassfish.jersey.internal.guava.CacheLoader;
-import org.glassfish.jersey.internal.guava.LoadingCache;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,26 +46,28 @@ public class GeolocationService {
         final Geolocation geolocation = geolocationDao.getGeolocation(query)
                 .orElseThrow(GeolocationNotFoundException::new);
 
-        geolocationDao.deleteGeolocation(geolocation.getQuery());
+        final String ip = geolocation.getQuery();
+        cache.invalidate(ip);
+        geolocationDao.deleteGeolocation(ip);
     }
 
     private LoadingCache<String, Optional<Geolocation>> buildCache() {
+        final CacheLoader<String, Optional<Geolocation>> cacheLoader = new CacheLoader<>() {
+            @Override
+            public Optional<Geolocation> load(String query) {
+                final Optional<Geolocation> geolocation =
+                        geolocationDao.getGeolocation(query);
+                if (geolocation.isPresent()) {
+                    LOGGER.info("load in cache");
+                }
+                return geolocation;
+            }
+        };
+
         return CacheBuilder.newBuilder()
                 .maximumSize(4)
                 .expireAfterAccess(1, TimeUnit.MINUTES)
-                .build(
-                        new CacheLoader<>() {
-                            @Override
-                            public Optional<Geolocation> load(String query) {
-                                final Optional<Geolocation> geolocation =
-                                        geolocationDao.getGeolocation(query);
-                                if (geolocation.isPresent()) {
-                                    LOGGER.info("load in cache");
-                                }
-                                return geolocation;
-                            }
-                        }
-                );
+                .build(cacheLoader);
     }
 
 }
