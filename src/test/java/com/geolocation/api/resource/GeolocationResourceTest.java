@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import javax.ws.rs.core.MediaType;
+import java.time.OffsetDateTime;
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -34,21 +35,21 @@ class GeolocationResourceTest {
     private Geolocation geolocation;
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         geolocation = new Geolocation("55.48.0.1", "success", "United States",
                 "US", "AZ", "Arizona", "Sierra Vista", "85613",
                 31.5552, -110.35, "America/Phoenix", "DoD Network Information Center",
-                "USAISC", "AS356 DoD Network Information Center");
+                "USAISC", "AS356 DoD Network Information Center", OffsetDateTime.now());
     }
 
     @AfterEach
-    public void tearDown(){
+    void tearDown(){
         reset(DAO);
     }
 
     @Disabled
     @Test
-    public void getGeolocationTest() {
+    void getGeolocationTest() {
         //when(SERVICE.getGeolocation(geolocation.getQuery())).thenReturn(geolocation);
         when(DAO.getGeolocation("55.48.0.1")).thenReturn(Optional.ofNullable(geolocation));
 

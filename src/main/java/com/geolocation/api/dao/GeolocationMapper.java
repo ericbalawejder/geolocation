@@ -6,6 +6,7 @@ import org.jdbi.v3.core.statement.StatementContext;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.OffsetDateTime;
 
 public class GeolocationMapper implements RowMapper<Geolocation> {
 
@@ -25,7 +26,8 @@ public class GeolocationMapper implements RowMapper<Geolocation> {
                 resultSet.getString("timezone"),
                 resultSet.getString("isp"),
                 resultSet.getString("org"),
-                resultSet.getString("as_handle")
+                resultSet.getString("as_handle"),
+                resultSet.getObject("date_created", OffsetDateTime.class)
         );
     }
 

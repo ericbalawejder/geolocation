@@ -35,7 +35,8 @@ public class Geolocation {
 
     public Geolocation(String query, String status, String country, String countryCode,
                        String region, String regionName, String city, String zip, double latitude,
-                       double longitude, String timezone, String isp, String org, String asHandle) {
+                       double longitude, String timezone, String isp, String org, String asHandle,
+                       OffsetDateTime dateCreated) {
         this.query = query;
         this.status = status;
         this.country = country;
@@ -50,6 +51,7 @@ public class Geolocation {
         this.isp = isp;
         this.org = org;
         this.asHandle = asHandle;
+        this.dateCreated = dateCreated;
     }
 
     public String getQuery() {
