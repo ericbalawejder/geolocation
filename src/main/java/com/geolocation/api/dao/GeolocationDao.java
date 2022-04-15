@@ -22,9 +22,9 @@ public interface GeolocationDao {
 
     @SqlUpdate("INSERT INTO geolocation (`query`, `status`, `country`, " +
             "`country_code`, `region`, `region_name`, `city`, `zip`, `latitude`, " +
-            "`longitude`, `timezone`,`isp`, `org`, `as_handle`, date_created) " +
+            "`longitude`, `timezone`,`isp`, `org`, `as_handle`) " +
             "VALUES (:query, :status, :country, :countryCode, :region, :regionName, :city, :zip," +
-            ":latitude, :longitude, :timezone, :isp, :org, :asHandle, :now);")
+            ":latitude, :longitude, :timezone, :isp, :org, :asHandle);")
     @Timestamped
     void insertGeolocation(@BindBean Geolocation geolocation);
 

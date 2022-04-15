@@ -71,8 +71,8 @@ I did not test the other CRUD operations because they were just for development 
 
 6) Added `date_created DATETIME(6)` to the schema and [`@Timestamped`](https://jdbi.org/#_timestamped) 
 annotation to the `insertGeolocation()` method in the dao to bind an `OffsetDateTime`, of which the value 
-is the current time, under the binding `:now`. This field is not part of the deserialization/serialization
-of the api response to the Geolocation POJO and vise versa.
+is the current time, under the binding `:now`. This field is preventing the deserialization
+of the api response to the Geolocation POJO and I don't know why. Work in progress.
 
 
 7) Did not implement due to time constraints. I would pull a record and do a conditional check for the

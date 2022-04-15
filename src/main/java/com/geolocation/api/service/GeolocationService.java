@@ -47,8 +47,9 @@ public class GeolocationService {
                 .orElseThrow(GeolocationNotFoundException::new);
 
         final String ip = geolocation.getQuery();
-        cache.invalidate(ip);
         geolocationDao.deleteGeolocation(ip);
+        cache.invalidate(ip);
+        LOGGER.info(cache.asMap().toString());
     }
 
     private LoadingCache<String, Optional<Geolocation>> buildCache() {

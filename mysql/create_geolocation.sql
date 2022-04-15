@@ -20,6 +20,5 @@ CREATE TABLE geolocation
     isp VARCHAR(255),
     org VARCHAR(255),
     as_handle VARCHAR(255),
-    date_created DATETIME(6),
     PRIMARY KEY (query)
 );

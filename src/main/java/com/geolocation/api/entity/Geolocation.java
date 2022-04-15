@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.jdbi.v3.core.mapper.reflect.ColumnName;
 
-import java.time.OffsetDateTime;
 import java.util.Objects;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -27,16 +26,13 @@ public class Geolocation {
     private String org;
     @ColumnName("as_handle")
     private String asHandle;
-    @ColumnName("date_created")
-    private OffsetDateTime dateCreated;
 
     protected Geolocation() {
     }
 
     public Geolocation(String query, String status, String country, String countryCode,
                        String region, String regionName, String city, String zip, double latitude,
-                       double longitude, String timezone, String isp, String org, String asHandle,
-                       OffsetDateTime dateCreated) {
+                       double longitude, String timezone, String isp, String org, String asHandle) {
         this.query = query;
         this.status = status;
         this.country = country;
@@ -51,7 +47,6 @@ public class Geolocation {
         this.isp = isp;
         this.org = org;
         this.asHandle = asHandle;
-        this.dateCreated = dateCreated;
     }
 
     public String getQuery() {
@@ -113,11 +108,6 @@ public class Geolocation {
         return asHandle;
     }
 
-    @JsonProperty(value = "date_created")
-    public OffsetDateTime getDateCreated() {
-        return dateCreated;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -162,7 +152,6 @@ public class Geolocation {
                 ", isp='" + isp + '\'' +
                 ", org='" + org + '\'' +
                 ", asHandle='" + asHandle + '\'' +
-                ", dateCreated=" + dateCreated +
                 '}';
     }
 
