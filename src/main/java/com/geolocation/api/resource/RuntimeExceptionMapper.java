@@ -1,16 +1,17 @@
 package com.geolocation.api.resource;
 
-import com.geolocation.api.exception.DuplicateEntryException;
-import com.geolocation.api.exception.GeolocationNotFoundException;
-import com.geolocation.api.exception.IPAddressFormatException;
-import com.geolocation.api.response.GeolocationErrorResponse;
-import org.eclipse.jetty.http.HttpStatus;
-
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
+
+import org.eclipse.jetty.http.HttpStatus;
+
+import com.geolocation.api.exception.DuplicateEntryException;
+import com.geolocation.api.exception.GeolocationNotFoundException;
+import com.geolocation.api.exception.IPAddressFormatException;
+import com.geolocation.api.response.GeolocationErrorResponse;
 
 /**
  * I'm looking to handle custom exceptions here like Spring Boot with the @ControllerAdvice
@@ -24,41 +25,41 @@ import javax.ws.rs.ext.Provider;
 @Produces(MediaType.APPLICATION_JSON)
 public class RuntimeExceptionMapper implements ExceptionMapper<RuntimeException> {
 
-    public Response handleIPAddressException(IPAddressFormatException exc) {
-        final GeolocationErrorResponse response = new GeolocationErrorResponse(
-                HttpStatus.BAD_REQUEST_400, exc.getMessage(), System.currentTimeMillis());
+  public Response handleIPAddressException(IPAddressFormatException exc) {
+    final GeolocationErrorResponse response = new GeolocationErrorResponse(
+        HttpStatus.BAD_REQUEST_400, exc.getMessage(), System.currentTimeMillis());
 
-        return Response.status(response.httpStatus())
-                .entity(response)
-                .type(MediaType.APPLICATION_JSON)
-                .build();
-    }
+    return Response.status(response.httpStatus())
+        .entity(response)
+        .type(MediaType.APPLICATION_JSON)
+        .build();
+  }
 
-    public Response handleGeolocationException(GeolocationNotFoundException exc) {
-        final GeolocationErrorResponse response = new GeolocationErrorResponse(
-                HttpStatus.NOT_FOUND_404, exc.getMessage(), System.currentTimeMillis());
+  public Response handleGeolocationException(GeolocationNotFoundException exc) {
+    final GeolocationErrorResponse response = new GeolocationErrorResponse(
+        HttpStatus.NOT_FOUND_404, exc.getMessage(), System.currentTimeMillis());
 
-        return Response.status(response.httpStatus())
-                .entity(response)
-                .type(MediaType.APPLICATION_JSON)
-                .build();
-    }
+    return Response.status(response.httpStatus())
+        .entity(response)
+        .type(MediaType.APPLICATION_JSON)
+        .build();
+  }
 
-    public Response handleDuplicateEntryException(DuplicateEntryException exc) {
-        final GeolocationErrorResponse response = new GeolocationErrorResponse(
-                HttpStatus.BAD_REQUEST_400, exc.getMessage(), System.currentTimeMillis());
+  public Response handleDuplicateEntryException(DuplicateEntryException exc) {
+    final GeolocationErrorResponse response = new GeolocationErrorResponse(
+        HttpStatus.BAD_REQUEST_400, exc.getMessage(), System.currentTimeMillis());
 
-        return Response.status(response.httpStatus())
-                .entity(response)
-                .type(MediaType.APPLICATION_JSON)
-                .build();
-    }
+    return Response.status(response.httpStatus())
+        .entity(response)
+        .type(MediaType.APPLICATION_JSON)
+        .build();
+  }
 
-    @Override
-    public Response toResponse(RuntimeException exception) {
-        return Response.status(404)
-                .entity(exception.getMessage())
-                .build();
-    }
+  @Override
+  public Response toResponse(RuntimeException exception) {
+    return Response.status(404)
+        .entity(exception.getMessage())
+        .build();
+  }
 
 }
