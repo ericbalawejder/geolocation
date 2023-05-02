@@ -19,6 +19,7 @@ import com.google.common.cache.LoadingCache;
 public class GeolocationService {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(GeolocationService.class);
+
   private final GeolocationDao geolocationDao;
   private final LoadingCache<String, Optional<Geolocation>> cache;
 
@@ -27,8 +28,12 @@ public class GeolocationService {
     this.cache = buildCache();
   }
 
-  public Optional<Geolocation> getGeolocation(String query) throws ExecutionException {
-    return cache.get(query);
+  public Optional<Geolocation> getGeolocation(String query) {
+    try {
+      return cache.get(query);
+    } catch (ExecutionException e) {
+      throw new RuntimeException(e);
+    }
   }
 
   public List<Geolocation> getGeolocations() {
@@ -57,15 +62,13 @@ public class GeolocationService {
     final CacheLoader<String, Optional<Geolocation>> cacheLoader = new CacheLoader<>() {
       @Override
       public Optional<Geolocation> load(String query) {
-        final Optional<Geolocation> geolocation =
-            geolocationDao.getGeolocation(query);
+        final Optional<Geolocation> geolocation = geolocationDao.getGeolocation(query);
         if (geolocation.isPresent()) {
           LOGGER.info("load in cache");
         }
         return geolocation;
       }
     };
-
     return CacheBuilder.newBuilder()
         .maximumSize(4)
         .expireAfterAccess(1, TimeUnit.MINUTES)

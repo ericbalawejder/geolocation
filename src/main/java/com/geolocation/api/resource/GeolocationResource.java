@@ -4,7 +4,6 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 import javax.inject.Singleton;
 import javax.validation.constraints.NotNull;
@@ -23,9 +22,7 @@ import org.apache.commons.validator.routines.InetAddressValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.geolocation.api.entity.Geolocation;
-import com.geolocation.api.exception.ExternalAPIRequestException;
 import com.geolocation.api.exception.IPAddressFormatException;
 import com.geolocation.api.service.GeolocationService;
 
@@ -38,6 +35,7 @@ public class GeolocationResource {
   // SSL unavailable for this endpoint, order a key at https://members.ip-api.com/
   private static final URI ENDPOINT = URI.create("http://ip-api.com/json/");
   private static final Logger LOGGER = LoggerFactory.getLogger(GeolocationResource.class);
+
   private final GeolocationService geolocationService;
 
   public GeolocationResource(GeolocationService geolocationService) {
@@ -54,18 +52,12 @@ public class GeolocationResource {
 
   @GET
   @Path("/ip/{query}")
-  public Response getGeolocation(@PathParam("query") String query) throws ExecutionException {
+  public Response getGeolocation(@PathParam("query") String query) {
     if (!InetAddressValidator.getInstance().isValid(query)) {
       throw new IPAddressFormatException();
     }
     final Geolocation geolocation = geolocationService.getGeolocation(query)
-        .orElseGet(() -> {
-          try {
-            return makeExternalAPICall(query);
-          } catch (MalformedURLException | JsonProcessingException e) {
-            throw new ExternalAPIRequestException();
-          }
-        });
+        .orElseGet(() -> makeExternalAPICall(query));
 
     return Response.ok()
         .entity(geolocation)
@@ -102,12 +94,16 @@ public class GeolocationResource {
         .build();
   }
 
-  private Geolocation makeExternalAPICall(String query) throws MalformedURLException, JsonProcessingException {
-    LOGGER.info("making external api call to " + ENDPOINT + query);
-    return ClientBuilder.newClient()
-        .target(ENDPOINT.toURL() + query)
-        .request()
-        .get(Geolocation.class);
+  private Geolocation makeExternalAPICall(String query) {
+    try {
+      LOGGER.info("making external api call to " + ENDPOINT + query);
+      return ClientBuilder.newClient()
+          .target(ENDPOINT.toURL() + query)
+          .request()
+          .get(Geolocation.class);
+    } catch (MalformedURLException e) {
+      throw new RuntimeException(e);
+    }
   }
 
 }
