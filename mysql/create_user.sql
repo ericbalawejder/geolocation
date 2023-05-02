@@ -11,8 +11,8 @@
 # See the MySQL Reference Manual for details:
 # https://dev.mysql.com/doc/refman/8.0/en/caching-sha2-pluggable-authentication.html
 
-CREATE USER 'geolocation'@'localhost' IDENTIFIED BY 'putmeingitsecrets';
+CREATE USER 'geolocation'@'%' IDENTIFIED BY 'putmeingitsecrets';
 
-GRANT ALL PRIVILEGES ON * . * TO 'geolocation'@'localhost';
+GRANT ALL PRIVILEGES ON * . * TO 'geolocation'@'%';
 
-ALTER USER 'geolocation'@'localhost' IDENTIFIED WITH caching_sha2_password BY 'putmeingitsecrets';
+ALTER USER 'geolocation'@'%' IDENTIFIED WITH caching_sha2_password BY 'putmeingitsecrets';
