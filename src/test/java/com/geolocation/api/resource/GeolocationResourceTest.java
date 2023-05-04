@@ -5,6 +5,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.mockito.MockitoAnnotations.openMocks;
 
 import java.util.Optional;
 
@@ -12,7 +13,6 @@ import javax.ws.rs.core.MediaType;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -27,17 +27,19 @@ import io.dropwizard.testing.junit5.ResourceExtension;
 class GeolocationResourceTest {
 
   private static final GeolocationDao DAO = mock(GeolocationDao.class);
-  //private static final GeolocationService SERVICE = mock(GeolocationService.class);
-  //private static final RuntimeExceptionMapper EXCEPTION_MAPPER = mock(RuntimeExceptionMapper.class);
+  private static final GeolocationService SERVICE = mock(GeolocationService.class);
+  private static final RuntimeExceptionMapper EXCEPTION_MAPPER = mock(RuntimeExceptionMapper.class);
   private static final ResourceExtension EXT = ResourceExtension.builder()
       .addResource(new GeolocationService(DAO))
-      //.addResource(new GeolocationResource(SERVICE))
-      //.addResource(new RuntimeExceptionMapper())
+      .addResource(new GeolocationResource(SERVICE))
+      .addResource(new RuntimeExceptionMapper())
       .build();
+
   private Geolocation geolocation;
 
   @BeforeEach
   void setup() {
+    openMocks(this);
     geolocation = new Geolocation("55.48.0.1", "success", "United States",
         "US", "AZ", "Arizona", "Sierra Vista", "85613",
         31.5552, -110.35, "America/Phoenix", "DoD Network Information Center",
@@ -49,11 +51,9 @@ class GeolocationResourceTest {
     reset(DAO);
   }
 
-  @Disabled
   @Test
   void getGeolocationTest() {
-    //when(SERVICE.getGeolocation(geolocation.getQuery())).thenReturn(geolocation);
-    when(DAO.getGeolocation("55.48.0.1")).thenReturn(Optional.ofNullable(geolocation));
+    when(SERVICE.getGeolocation("55.48.0.1")).thenReturn(Optional.ofNullable(geolocation));
 
     final Geolocation found = EXT.target("/api/geolocation/ip/55.48.0.1")
         .request()
@@ -61,12 +61,9 @@ class GeolocationResourceTest {
         .get(Geolocation.class);
 
     assertThat(found).isEqualTo(geolocation);
-
-    //verify(SERVICE).getGeolocation(geolocation.getQuery());
-    verify(DAO).getGeolocation(geolocation.getQuery());
+    verify(SERVICE).getGeolocation(geolocation.getQuery());
   }
 
-  @Disabled
   @Test
   void helloTest() {
     assertThat(EXT.target("/api/geolocation/hello")
