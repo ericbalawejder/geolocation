@@ -5,6 +5,8 @@ import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
+import javax.annotation.Nonnull;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,6 +21,9 @@ import com.google.common.cache.LoadingCache;
 public class GeolocationService {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(GeolocationService.class);
+  private static final int CACHE_SIZE = 4;
+  private static final int CACHE_DURATION = 1;
+  private static final TimeUnit TIME_UNIT = TimeUnit.MINUTES;
 
   private final GeolocationDao geolocationDao;
   private final LoadingCache<String, Optional<Geolocation>> cache;
@@ -60,8 +65,9 @@ public class GeolocationService {
 
   private LoadingCache<String, Optional<Geolocation>> buildCache() {
     final CacheLoader<String, Optional<Geolocation>> cacheLoader = new CacheLoader<>() {
+      @Nonnull
       @Override
-      public Optional<Geolocation> load(String query) {
+      public Optional<Geolocation> load(@Nonnull String query) {
         final Optional<Geolocation> geolocation = geolocationDao.getGeolocation(query);
         if (geolocation.isPresent()) {
           LOGGER.info("load in cache");
@@ -70,8 +76,8 @@ public class GeolocationService {
       }
     };
     return CacheBuilder.newBuilder()
-        .maximumSize(4)
-        .expireAfterAccess(1, TimeUnit.MINUTES)
+        .maximumSize(CACHE_SIZE)
+        .expireAfterAccess(CACHE_DURATION, TIME_UNIT)
         .build(cacheLoader);
   }
 
