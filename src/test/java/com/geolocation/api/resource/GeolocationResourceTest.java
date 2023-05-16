@@ -1,27 +1,24 @@
 package com.geolocation.api.resource;
 
+import com.geolocation.api.dao.GeolocationDao;
+import com.geolocation.api.entity.Geolocation;
+import com.geolocation.api.service.GeolocationService;
+import io.dropwizard.testing.junit5.DropwizardExtensionsSupport;
+import io.dropwizard.testing.junit5.ResourceExtension;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+
+import javax.ws.rs.core.MediaType;
+import java.util.Optional;
+
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.openMocks;
-
-import java.util.Optional;
-
-import javax.ws.rs.core.MediaType;
-
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-
-import com.geolocation.api.dao.GeolocationDao;
-import com.geolocation.api.entity.Geolocation;
-import com.geolocation.api.service.GeolocationService;
-
-import io.dropwizard.testing.junit5.DropwizardExtensionsSupport;
-import io.dropwizard.testing.junit5.ResourceExtension;
 
 @ExtendWith(DropwizardExtensionsSupport.class)
 class GeolocationResourceTest {
@@ -35,15 +32,9 @@ class GeolocationResourceTest {
       .addResource(new RuntimeExceptionMapper())
       .build();
 
-  private Geolocation geolocation;
-
   @BeforeEach
   void setup() {
     openMocks(this);
-    geolocation = new Geolocation("55.48.0.1", "success", "United States",
-        "US", "AZ", "Arizona", "Sierra Vista", "85613",
-        31.5552, -110.35, "America/Phoenix", "DoD Network Information Center",
-        "USAISC", "AS356 DoD Network Information Center");
   }
 
   @AfterEach
@@ -53,15 +44,20 @@ class GeolocationResourceTest {
 
   @Test
   void getGeolocationTest() {
-    when(SERVICE.getGeolocation("55.48.0.1")).thenReturn(Optional.ofNullable(geolocation));
+    final Geolocation expected = new Geolocation("55.48.0.1", "success", "United States",
+        "US", "AZ", "Arizona", "Sierra Vista", "85613",
+        31.5552, -110.35, "America/Phoenix", "DoD Network Information Center",
+        "USAISC", "AS356 DoD Network Information Center");
 
-    final Geolocation found = EXT.target("/api/geolocation/ip/55.48.0.1")
+    when(SERVICE.getGeolocation("55.48.0.1")).thenReturn(Optional.of(expected));
+
+    final Geolocation actual = EXT.target("/api/geolocation/ip/55.48.0.1")
         .request()
         .accept(MediaType.APPLICATION_JSON)
         .get(Geolocation.class);
 
-    assertThat(found).isEqualTo(geolocation);
-    verify(SERVICE).getGeolocation(geolocation.getQuery());
+    assertThat(expected).isEqualTo(actual);
+    verify(SERVICE).getGeolocation(expected.getQuery());
   }
 
   @Test
