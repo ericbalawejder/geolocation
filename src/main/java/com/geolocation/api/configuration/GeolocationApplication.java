@@ -1,5 +1,7 @@
 package com.geolocation.api.configuration;
 
+import io.dropwizard.core.Application;
+import io.dropwizard.core.setup.Environment;
 import org.jdbi.v3.core.Jdbi;
 
 import com.geolocation.api.dao.GeolocationDao;
@@ -7,9 +9,7 @@ import com.geolocation.api.resource.GeolocationResource;
 import com.geolocation.api.resource.RuntimeExceptionMapper;
 import com.geolocation.api.service.GeolocationService;
 
-import io.dropwizard.Application;
 import io.dropwizard.jdbi3.JdbiFactory;
-import io.dropwizard.setup.Environment;
 
 public class GeolocationApplication extends Application<GeolocationConfiguration> {
 

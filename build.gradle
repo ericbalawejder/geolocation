@@ -1,21 +1,32 @@
+import org.codehaus.groovy.runtime.GStringImpl
+
 plugins {
     id 'application'
-    id "com.github.johnrengelman.shadow" version "7.1.2"
+    id "com.github.johnrengelman.shadow" version "8.1.1"
 }
 
-group 'com.geolocation.api'
-version '0.0.1-SNAPSHOT'
+application {
+    setMainClass("com.geolocation.api.configuration.GeolocationApplication")
+}
 
-sourceCompatibility = 17
+java {
+    setSourceCompatibility(JavaVersion.VERSION_17)
+}
+
+group {
+    setGroup('com.geolocation.api')
+    setVersion('0.0.1-SNAPSHOT')
+}
 
 project.ext {
-    configPath = "$rootProject.projectDir/config/"
-    dropwizardVersion = '2.0.28'
-    mysqlVersion = '8.0.28'
+    configPath = "$rootProject.projectDir/config/" as GStringImpl
+    dropwizardVersion = '4.0.1'
+    mysqlVersion = '8.0.33'
     commonsValidatorVersion = '1.7'
-    junitJupiterVersion = '5.8.2'
-    mockitoVersion = '4.3.1'
-    assertjVersion = '3.22.0'
+    junitJupiterVersion = '5.10.0'
+    junitPlatformVersion = '1.10.0'
+    mockitoVersion = '5.5.0'
+    assertjVersion = '3.24.2'
 }
 
 repositories {
@@ -31,6 +42,7 @@ dependencies {
 
     testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: junitJupiterVersion
     testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: junitJupiterVersion
+    testRuntimeOnly group: 'org.junit.platform', name: 'junit-platform-launcher', version: junitPlatformVersion
     testImplementation group: 'org.assertj', name: 'assertj-core', version: assertjVersion
     testImplementation group: 'io.dropwizard', name: 'dropwizard-testing', version: dropwizardVersion
     testImplementation group: 'org.mockito', name: 'mockito-junit-jupiter', version: mockitoVersion
@@ -46,12 +58,10 @@ test {
     }
 }
 
-mainClassName = "com.geolocation.api.configuration.GeolocationApplication"
-
 run {
     args 'server', configPath + 'config.yml'
 }
 
 wrapper {
-    gradleVersion = "7.4"
+    gradleVersion = "8.3"
 }
