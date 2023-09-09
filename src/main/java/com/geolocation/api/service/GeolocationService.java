@@ -1,22 +1,25 @@
 package com.geolocation.api.service;
 
+import com.geolocation.api.dao.GeolocationDao;
+import com.geolocation.api.entity.Geolocation;
+import com.geolocation.api.exception.CacheException;
+import com.geolocation.api.exception.DuplicateEntryException;
+import com.geolocation.api.exception.GeolocationNotFoundException;
+import com.geolocation.api.exception.IPAddressFormatException;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
+import com.google.common.util.concurrent.UncheckedExecutionException;
+import org.apache.commons.validator.routines.InetAddressValidator;
+import org.jdbi.v3.core.statement.UnableToExecuteStatementException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
-
-import javax.annotation.Nonnull;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.geolocation.api.dao.GeolocationDao;
-import com.geolocation.api.entity.Geolocation;
-import com.geolocation.api.exception.DuplicateEntryException;
-import com.geolocation.api.exception.GeolocationNotFoundException;
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
 
 public class GeolocationService {
 
@@ -34,10 +37,13 @@ public class GeolocationService {
   }
 
   public Optional<Geolocation> getGeolocation(String query) {
+    if (!InetAddressValidator.getInstance().isValid(query)) {
+      throw new IPAddressFormatException();
+    }
     try {
       return cache.get(query);
-    } catch (ExecutionException e) {
-      throw new RuntimeException(e);
+    } catch (ExecutionException | UncheckedExecutionException e) {
+      throw new CacheException("cache failure", e);
     }
   }
 
@@ -48,7 +54,7 @@ public class GeolocationService {
   public void insertGeolocation(Geolocation geolocation) {
     try {
       geolocationDao.insertGeolocation(geolocation);
-    } catch (Exception e) {
+    } catch (UnableToExecuteStatementException e) {
       throw new DuplicateEntryException();
     }
   }

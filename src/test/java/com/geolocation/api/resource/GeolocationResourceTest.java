@@ -5,12 +5,12 @@ import com.geolocation.api.entity.Geolocation;
 import com.geolocation.api.service.GeolocationService;
 import io.dropwizard.testing.junit5.DropwizardExtensionsSupport;
 import io.dropwizard.testing.junit5.ResourceExtension;
+import jakarta.ws.rs.core.MediaType;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import jakarta.ws.rs.core.MediaType;
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -25,11 +25,9 @@ class GeolocationResourceTest {
 
   private static final GeolocationDao DAO = mock(GeolocationDao.class);
   private static final GeolocationService SERVICE = mock(GeolocationService.class);
-  private static final RuntimeExceptionMapper EXCEPTION_MAPPER = mock(RuntimeExceptionMapper.class);
   private static final ResourceExtension EXT = ResourceExtension.builder()
       .addResource(new GeolocationService(DAO))
       .addResource(new GeolocationResource(SERVICE))
-      .addResource(new RuntimeExceptionMapper())
       .build();
 
   @BeforeEach

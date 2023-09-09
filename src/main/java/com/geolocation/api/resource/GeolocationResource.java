@@ -1,10 +1,8 @@
 package com.geolocation.api.resource;
 
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.List;
-
+import com.geolocation.api.entity.Geolocation;
+import com.geolocation.api.exception.ExternalAPIRequestException;
+import com.geolocation.api.service.GeolocationService;
 import jakarta.inject.Singleton;
 import jakarta.validation.constraints.NotNull;
 import jakarta.ws.rs.Consumes;
@@ -17,14 +15,13 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-
-import org.apache.commons.validator.routines.InetAddressValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.geolocation.api.entity.Geolocation;
-import com.geolocation.api.exception.IPAddressFormatException;
-import com.geolocation.api.service.GeolocationService;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.List;
 
 @Path("/api/geolocation")
 @Consumes(MediaType.APPLICATION_JSON)
@@ -53,9 +50,6 @@ public class GeolocationResource {
   @GET
   @Path("/ip/{query}")
   public Response getGeolocation(@PathParam("query") String query) {
-    if (!InetAddressValidator.getInstance().isValid(query)) {
-      throw new IPAddressFormatException();
-    }
     final Geolocation geolocation = geolocationService.getGeolocation(query)
         .orElseGet(() -> makeExternalAPICall(query));
 
@@ -76,12 +70,17 @@ public class GeolocationResource {
 
   @POST
   @Path("/upload")
-  public Response insertGeolocation(@NotNull Geolocation geolocation) throws URISyntaxException {
-    geolocationService.insertGeolocation(geolocation);
+  public Response insertGeolocation(@NotNull Geolocation geolocation) {
+    try {
+      final URI url = new URI("/api/geolocation/" + geolocation.getQuery());
+      geolocationService.insertGeolocation(geolocation);
 
-    return Response.created(new URI("/api/geolocation/" + geolocation.getQuery()))
-        .entity("geolocation uploaded successfully")
-        .build();
+      return Response.created(url)
+          .entity("geolocation uploaded successfully")
+          .build();
+    } catch (URISyntaxException e) {
+      throw new RuntimeException("the given string violates RFC2396: " + e);
+    }
   }
 
   @DELETE
@@ -102,7 +101,7 @@ public class GeolocationResource {
           .request()
           .get(Geolocation.class);
     } catch (MalformedURLException e) {
-      throw new RuntimeException(e);
+      throw new ExternalAPIRequestException("external api call failed", e);
     }
   }
 
