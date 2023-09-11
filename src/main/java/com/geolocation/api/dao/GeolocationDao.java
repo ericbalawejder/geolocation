@@ -30,6 +30,6 @@ public interface GeolocationDao {
   void insertGeolocation(@BindBean Geolocation geolocation);
 
   @SqlUpdate("DELETE FROM geolocation WHERE query = :query")
-  void deleteGeolocation(@Bind("query") String query);
+  boolean deleteGeolocation(@Bind("query") String query);
 
 }

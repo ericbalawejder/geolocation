@@ -59,14 +59,14 @@ public class GeolocationService {
     }
   }
 
-  public void deleteGeolocation(String query) {
-    final Geolocation geolocation = geolocationDao.getGeolocation(query)
-        .orElseThrow(GeolocationNotFoundException::new);
-
-    final String ip = geolocation.getQuery();
-    geolocationDao.deleteGeolocation(ip);
-    cache.invalidate(ip);
-    LOGGER.info(cache.asMap().toString());
+  public synchronized void deleteGeolocation(String query) {
+    final boolean isDeleted = geolocationDao.deleteGeolocation(query);
+    if (isDeleted) {
+      cache.invalidate(query);
+      LOGGER.info(cache.asMap().toString());
+    } else {
+      throw new GeolocationNotFoundException();
+    }
   }
 
   private LoadingCache<String, Optional<Geolocation>> buildCache() {
