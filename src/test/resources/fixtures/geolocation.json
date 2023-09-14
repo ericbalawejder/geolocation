@@ -12,5 +12,6 @@
   "timezone": "America/Phoenix",
   "isp": "DoD Network Information Center",
   "org": "USAISC",
-  "as": "AS356 DoD Network Information Center"
+  "as": "AS356 DoD Network Information Center",
+  "createDate": "2023-01-01T00:00:00Z"
 }

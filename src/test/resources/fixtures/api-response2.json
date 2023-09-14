@@ -8,5 +8,6 @@
   "lat": 31.5552,
   "lon": -110.35,
   "isp": "DoD Network Information Center",
-  "as": "AS356 DoD Network Information Center"
+  "as": "AS356 DoD Network Information Center",
+  "createDate": "2023-01-01T00:00:00Z"
 }

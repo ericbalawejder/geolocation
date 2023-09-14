@@ -14,5 +14,6 @@
   "org": "USAISC",
   "as": "AS356 DoD Network Information Center",
   "abc": "extra field",
-  "xyz": "another extra field"
+  "xyz": "another extra field",
+  "createDate": "2023-01-01T00:00:00Z"
 }

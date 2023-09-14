@@ -1,5 +1,6 @@
 package com.geolocation.api.configuration;
 
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.geolocation.api.dao.GeolocationDao;
 import com.geolocation.api.exception.CacheExceptionMapper;
 import com.geolocation.api.exception.DuplicateEntryExceptionMapper;
@@ -23,6 +24,7 @@ public class GeolocationApplication extends Application<GeolocationConfiguration
   @Override
   public void run(GeolocationConfiguration configuration, Environment environment) {
     System.out.println("Geolocation Application");
+    environment.getObjectMapper().configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
     final JdbiFactory factory = new JdbiFactory();
     final Jdbi jdbi = factory.build(environment, configuration.getDataSourceFactory(), "mysql");
     final GeolocationDao geolocationDao = jdbi.onDemand(GeolocationDao.class);

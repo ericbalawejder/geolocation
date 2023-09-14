@@ -11,6 +11,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
+import java.time.OffsetDateTime;
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -45,7 +46,7 @@ class GeolocationResourceTest {
     final Geolocation expected = new Geolocation("55.48.0.1", "success", "United States",
         "US", "AZ", "Arizona", "Sierra Vista", "85613",
         31.5552, -110.35, "America/Phoenix", "DoD Network Information Center",
-        "USAISC", "AS356 DoD Network Information Center");
+        "USAISC", "AS356 DoD Network Information Center", OffsetDateTime.parse("2023-01-01T00:00:00Z"));
 
     when(SERVICE.getGeolocation("55.48.0.1")).thenReturn(Optional.of(expected));
 

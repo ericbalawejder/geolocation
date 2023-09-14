@@ -16,6 +16,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
+import java.sql.SQLIntegrityConstraintViolationException;
+import java.sql.SQLRecoverableException;
+import java.sql.SQLTransientException;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
@@ -55,18 +58,24 @@ public class GeolocationService {
     try {
       geolocationDao.insertGeolocation(geolocation);
     } catch (UnableToExecuteStatementException e) {
-      throw new DuplicateEntryException();
+      if (e.getCause() instanceof SQLRecoverableException || e.getCause() instanceof SQLTransientException) {
+        throw new RuntimeException(e.getMessage());
+      }
+      if (e.getCause() instanceof SQLIntegrityConstraintViolationException) {
+        throw new DuplicateEntryException();
+      }
+      throw new RuntimeException(e.getMessage());
     }
   }
 
   public synchronized void deleteGeolocation(String query) {
     final boolean isDeleted = geolocationDao.deleteGeolocation(query);
-    if (isDeleted) {
-      cache.invalidate(query);
-      LOGGER.info(cache.asMap().toString());
-    } else {
+    if (!isDeleted) {
       throw new GeolocationNotFoundException();
     }
+    cache.invalidate(query);
+    LOGGER.info("deleted ip: {}", query);
+    LOGGER.info(cache.asMap().toString());
   }
 
   private LoadingCache<String, Optional<Geolocation>> buildCache() {

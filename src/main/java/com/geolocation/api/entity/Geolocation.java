@@ -1,11 +1,11 @@
 package com.geolocation.api.entity;
 
-import java.util.Objects;
-
-import org.jdbi.v3.core.mapper.reflect.ColumnName;
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.jdbi.v3.core.mapper.reflect.ColumnName;
+
+import java.time.OffsetDateTime;
+import java.util.Objects;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Geolocation {
@@ -27,13 +27,16 @@ public class Geolocation {
   private String org;
   @ColumnName("as_handle")
   private String asHandle;
+  @ColumnName("create_date")
+  private OffsetDateTime createDate;
 
   protected Geolocation() {
   }
 
   public Geolocation(String query, String status, String country, String countryCode,
-      String region, String regionName, String city, String zip, double latitude,
-      double longitude, String timezone, String isp, String org, String asHandle) {
+                     String region, String regionName, String city, String zip, double latitude,
+                     double longitude, String timezone, String isp, String org, String asHandle,
+                     OffsetDateTime createDate) {
     this.query = query;
     this.status = status;
     this.country = country;
@@ -48,6 +51,7 @@ public class Geolocation {
     this.isp = isp;
     this.org = org;
     this.asHandle = asHandle;
+    this.createDate = createDate;
   }
 
   public String getQuery() {
@@ -109,6 +113,10 @@ public class Geolocation {
     return asHandle;
   }
 
+  public OffsetDateTime getCreateDate() {
+    return createDate;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -131,13 +139,14 @@ public class Geolocation {
         Objects.equals(timezone, that.timezone) &&
         Objects.equals(isp, that.isp) &&
         Objects.equals(org, that.org) &&
-        Objects.equals(asHandle, that.asHandle);
+        Objects.equals(asHandle, that.asHandle) &&
+        Objects.equals(createDate, that.createDate);
   }
 
   @Override
   public int hashCode() {
     return Objects.hash(query, status, country, countryCode, region, regionName,
-        city, zip, latitude, longitude, timezone, isp, org, asHandle);
+        city, zip, latitude, longitude, timezone, isp, org, asHandle, createDate);
   }
 
   @Override
@@ -157,6 +166,7 @@ public class Geolocation {
         ", isp='" + isp + '\'' +
         ", org='" + org + '\'' +
         ", asHandle='" + asHandle + '\'' +
+        ", createDate='" + createDate + '\'' +
         '}';
   }
 
