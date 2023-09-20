@@ -79,7 +79,7 @@ public class GeolocationResource {
           .entity("geolocation uploaded successfully")
           .build();
     } catch (URISyntaxException e) {
-      throw new RuntimeException("the given string violates RFC2396: " + e);
+      throw new RuntimeException("the given string violates RFC2396: " + e.getMessage());
     }
   }
 
@@ -101,7 +101,7 @@ public class GeolocationResource {
           .request()
           .get(Geolocation.class);
     } catch (MalformedURLException e) {
-      throw new ExternalAPIRequestException("external api call failed", e);
+      throw new ExternalAPIRequestException("external api call failed: " + e.getMessage());
     }
   }
 

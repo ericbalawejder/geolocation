@@ -46,7 +46,7 @@ public class GeolocationService {
     try {
       return cache.get(query);
     } catch (ExecutionException | UncheckedExecutionException e) {
-      throw new CacheException("cache failure", e);
+      throw new CacheException("cache failure: " + e.getMessage());
     }
   }
 
@@ -59,12 +59,12 @@ public class GeolocationService {
       geolocationDao.insertGeolocation(geolocation);
     } catch (UnableToExecuteStatementException e) {
       if (e.getCause() instanceof SQLRecoverableException || e.getCause() instanceof SQLTransientException) {
-        throw new RuntimeException(e.getMessage());
+        throw new RuntimeException(e.getMessage(), e.getCause());
       }
       if (e.getCause() instanceof SQLIntegrityConstraintViolationException) {
         throw new DuplicateEntryException();
       }
-      throw new RuntimeException(e.getMessage());
+      throw new RuntimeException(e.getMessage(), e.getCause());
     }
   }
 
