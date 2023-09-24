@@ -10,7 +10,7 @@ application {
 }
 
 java {
-    setSourceCompatibility(JavaVersion.VERSION_17)
+    setSourceCompatibility(JavaVersion.VERSION_21)
 }
 
 group {
